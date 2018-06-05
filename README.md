@@ -1,24 +1,16 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Rails API for BOOM.
 
-Things you may want to cover:
+Current Models:
 
-* Ruby version
+User 
 
-* System dependencies
 
-* Configuration
+Current Routes:
 
-* Database creation
+All Users:
+http://localhost:3000/api/v1/users
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Specific User:
+`http://localhost:3000/api/v1/users/${}`
