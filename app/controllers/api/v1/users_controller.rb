@@ -1,20 +1,44 @@
 class Api::V1::UsersController < ApplicationController
 
-  before_action :find_user, only: [:show, :edit, :update, :destroy]
-
   def index
-    users = User.all
-    render json: users
-  end
-
-  def show
-    user = User.find(params[:id])
+    user = User.all
     render json: user
   end
 
+  def show
+
+    @user = User.find_by(id: params[:id])
+
+    if authorized?(@user)
+      render json: {
+            user_id: @user.id,
+            username: @user.username,
+            password: @user.password,
+            email: @user.email,
+            exploded: @user.exploded,
+            defused: @user.defused,
+          }
+
+    else
+      render json: { go_away: true }, status: :unauthorized
+    end
+
+  end
+
+
   def create
-    user = User.create(user_params)
-    render json: user, status: 201
+    @user = User.new(user_params)
+
+    if (@user.save)
+      render json: {
+        username: @user.username,
+        token: token_json(@user)
+      }
+    else
+      render json: {errors: @user.errors.full_messages},
+      status: :unprocessible_entity
+    end
+
   end
 
   def update
@@ -28,8 +52,8 @@ class Api::V1::UsersController < ApplicationController
 
   private
 
-  def find_user
-    @user = User.find(params[:id])
+  def user_params
+    params.require(:user).permit(:user_id,:username, :password, :email)
   end
 
 end

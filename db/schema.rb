@@ -14,7 +14,7 @@ ActiveRecord::Schema.define(version: 20180605204042) do
 
   create_table "users", force: :cascade do |t|
     t.string "username"
-    t.string "password"
+    t.string "password_digest"
     t.string "email"
     t.integer "exploded", default: 0
     t.integer "defused", default: 0
