@@ -45,14 +45,12 @@ class ApplicationController < ActionController::API
     unless decoded && decoded[0] && decoded[0]["user_id"]
       return nil
     end
-
-    decoded[0]["user_id"]
-
+    return decoded[0]["user_id"]
   end
 
   #high level authorization! check the decoded user id with table user ID
     def authorized?(user)
-      current_user_id == user.id
+      return current_user_id == user.id
     end
 
 end

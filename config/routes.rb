@@ -6,8 +6,9 @@ Rails.application.routes.draw do
       resources :sessions
 
       get '/users/', to: 'users#show'
-      post '/sessions/', to: 'sessions#create'
+      patch '/users/', to: 'users#update'
       post '/users/', to: 'users#create'
+      post '/sessions/', to: 'sessions#create'
 
     end
   end

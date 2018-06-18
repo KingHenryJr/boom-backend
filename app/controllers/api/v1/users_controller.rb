@@ -8,7 +8,6 @@ class Api::V1::UsersController < ApplicationController
   def show
 
     @user = User.find_by(id: params[:id])
-
     if authorized?(@user)
       render json: {
             user_id: @user.id,
@@ -18,7 +17,6 @@ class Api::V1::UsersController < ApplicationController
             exploded: @user.exploded,
             defused: @user.defused,
           }
-
     else
       render json: { go_away: true }, status: :unauthorized
     end
@@ -27,13 +25,11 @@ class Api::V1::UsersController < ApplicationController
 
 
   def create
-    @user = User.new(user_params)
+    @user = User.create(username: params["username"], password: params["password"], email: params["email"])
 
     if (@user.save)
-      render json: {
-        username: @user.username,
-        token: token_json(@user)
-      }
+      render json: token_json(@user),
+      status: :accepted
     else
       render json: {errors: @user.errors.full_messages},
       status: :unprocessible_entity
@@ -42,18 +38,29 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def update
-    @user.update(user_params)
-    if @user.save
-      render json: @user, status: :accepted
-    else
-      render json: { errors: @user.errors.full_messages }, status: :unprocessible_entity
+    @user = User.find_by(id: params[:id])
+    if authorized?(@user)
+
+      if @user.update(exploded: params["exploded"], defused: params["defused"])
+          render json: {
+            exploded: @user.exploded,
+            defused: @user.defused,
+          },
+          status: :accepted
+        else
+          render json: {
+            errors: "Must be logged in!"
+          }, status: :unauthorized
+        end
+
     end
+
   end
 
   private
 
   def user_params
-    params.require(:user).permit(:user_id,:username, :password, :email)
+    params.require(:user).permit(:user_id,:username, :password, :email, :exploded, :defused)
   end
 
 end
